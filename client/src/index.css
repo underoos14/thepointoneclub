@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   STRUCTURAL / LAYOUT CSS
+   Brand colours and fonts live in tailwind.config.js.
+   This file only defines global base styles, typography scale
+   and reusable structural pieces — no brand values.
+   ============================================================ */
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-paper font-body text-ink antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-green-700 text-paper;
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .display-heading {
+    @apply font-display uppercase tracking-display;
+  }
+}
