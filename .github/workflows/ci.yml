@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: Deploy to dev (feature branch)
         if: startsWith(github.ref, 'refs/heads/feature/')
-        run: echo "TODO: deploy to the dev environment"
+        run: echo "Deploy to dev (feature branch) - wire up the target here"
       - name: Deploy to prod (master)
         if: github.ref == 'refs/heads/master'
-        run: echo "TODO: deploy to the prod environment"
+        run: echo "Deploy to prod (master) - wire up the target here"
