@@ -4,6 +4,7 @@ const VARIANTS = {
   primary: 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700',
   secondary: 'bg-green-700 text-white hover:bg-green-900 active:bg-green-900',
   outline: 'border border-green-700 text-green-700 hover:bg-green-100',
+  dangerOutline: 'border border-red-500 text-red-500 hover:bg-red-100',
   ghost: 'text-ink hover:bg-green-100',
   danger: 'text-red-500 hover:bg-red-100',
 };

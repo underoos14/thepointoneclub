@@ -1,4 +1,5 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './features/auth/AuthContext';
 import { PublicLayout } from './layout/PublicLayout';
 import { EventsPage } from './features/events/EventsPage';
@@ -7,10 +8,21 @@ import { ProtectedRoute } from './features/auth/ProtectedRoute';
 import { AdminDashboard } from './features/admin/AdminDashboard';
 import { EventFormPage } from './features/admin/EventFormPage';
 
+function ScrollToHash() {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (hash) {
+      document.getElementById(hash.slice(1))?.scrollIntoView();
+    }
+  }, [hash]);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ScrollToHash />
         <Routes>
           <Route element={<PublicLayout />}>
             <Route path="/" element={<EventsPage />} />
