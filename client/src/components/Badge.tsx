@@ -18,9 +18,11 @@ export function StatusBadge({ status }: { status: EventStatus }) {
   );
 }
 
-export function CategoryTag({ label }: { label: string }) {
+export function CategoryTag({ label, className = '' }: { label: string; className?: string }) {
   return (
-    <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.22em] text-green-700">
+    <span
+      className={`inline-block text-[11px] font-semibold uppercase text-green-700 ${className}`}
+    >
       {label}
     </span>
   );

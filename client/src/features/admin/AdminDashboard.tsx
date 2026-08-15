@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { ClubEvent } from '../../types';
 import { Button } from '../../components/Button';
 import { CategoryTag, StatusBadge } from '../../components/Badge';
 import { PageLoader } from '../../components/Spinner';
 import { getErrorMessage } from '../../config/api';
-import { formatDateShort, formatFee } from '../../utils/format';
+import { formatDateShort } from '../../utils/format';
 import { deleteEvent, fetchEvents } from '../events/events.api';
 
 function EventRow({
@@ -16,11 +16,11 @@ function EventRow({
   onDelete: (event: ClubEvent) => void;
 }) {
   return (
-    <div className="grid grid-cols-1 items-center gap-3 rounded-xl bg-surface p-4 shadow-card sm:grid-cols-[2fr_auto_auto_auto_auto] sm:gap-4">
+    <div className="grid grid-cols-1 items-center gap-3 rounded-xl bg-surface p-4 shadow-card sm:grid-cols-[2fr_auto_auto_auto] sm:gap-4">
       <div className="min-w-0">
         <p className="display-heading truncate text-lg leading-tight text-ink">{event.title}</p>
         <div className="mt-1 flex flex-wrap items-center gap-2">
-          <CategoryTag label={event.category} />
+          <CategoryTag label={event.category} className="tracking-[0.12em]" />
           <span className="text-sm text-ink-muted">
             {formatDateShort(event.startDate)}
             {event.endDate ? ` – ${formatDateShort(event.endDate)}` : ''}
@@ -28,7 +28,6 @@ function EventRow({
         </div>
       </div>
 
-      <span className="text-sm font-semibold text-ink sm:text-right">{formatFee(event.registrationFee)}</span>
       <span className="justify-self-start sm:justify-self-end">
         <StatusBadge status={event.status} />
       </span>
@@ -39,7 +38,7 @@ function EventRow({
             Edit
           </Button>
         </Link>
-        <Button variant="danger" size="sm" onClick={() => onDelete(event)}>
+        <Button variant="dangerOutline" size="sm" onClick={() => onDelete(event)}>
           Delete
         </Button>
       </div>
@@ -51,6 +50,16 @@ export function AdminDashboard() {
   const [events, setEvents] = useState<ClubEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [query, setQuery] = useState('');
+
+  const filteredEvents = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return events;
+    return events.filter(
+      (event) =>
+        event.title.toLowerCase().includes(q) || event.category.toLowerCase().includes(q)
+    );
+  }, [events, query]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -86,9 +95,22 @@ export function AdminDashboard() {
           <h1 className="display-heading text-4xl text-ink">Admin</h1>
           <p className="mt-2 text-ink-muted">Manage every event on the calendar.</p>
         </div>
-        <Link to="/admin/events/new">
-          <Button variant="secondary">+ New event</Button>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <label htmlFor="admin-event-search" className="sr-only">
+            Search events
+          </label>
+          <input
+            id="admin-event-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search events…"
+            className="w-full rounded-sm border border-ink/15 bg-surface px-3 py-2.5 text-sm outline-none transition-colors focus:border-green-700 focus:ring-2 focus:ring-green-700/20 sm:w-64"
+          />
+          <Link to="/admin/events/new">
+            <Button variant="secondary">+ New event</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="mt-8 flex flex-col gap-3">
@@ -100,8 +122,12 @@ export function AdminDashboard() {
           <p className="rounded-xl border border-dashed border-green-300 bg-surface px-6 py-16 text-center text-ink-muted">
             No events yet. Create your first one.
           </p>
+        ) : filteredEvents.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-green-300 bg-surface px-6 py-16 text-center text-ink-muted">
+            No events match your search.
+          </p>
         ) : (
-          events.map((event) => (
+          filteredEvents.map((event) => (
             <EventRow key={event.id} event={event} onDelete={handleDelete} />
           ))
         )}

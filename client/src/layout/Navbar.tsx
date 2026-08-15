@@ -31,12 +31,9 @@ export function Navbar() {
         <BrandMark />
 
         <nav className="flex items-center gap-1">
-          <a
-            href="#events"
-            className="px-3 py-2 text-sm font-semibold uppercase tracking-wider text-ink-muted transition-colors hover:text-ink"
-          >
+          <NavLink to="/#events" className={navLinkClass}>
             Events
-          </a>
+          </NavLink>
           {user?.role === 'admin' && (
             <NavLink to="/admin" className={navLinkClass}>
               Admin

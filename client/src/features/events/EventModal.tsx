@@ -100,7 +100,7 @@ export function EventModal({ event, onClose }: { event: ClubEvent | null; onClos
 
         <div className="flex flex-col gap-6 p-6 sm:p-8">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <CategoryTag label={category} />
+            <CategoryTag label={category} className="tracking-[0.22em]" />
             <MetaRow icon={<CalendarIcon />}>{formatDateRange(startDate, endDate)}</MetaRow>
             {(startTime || endTime) && (
               <MetaRow icon={<ClockIcon />}>

@@ -58,7 +58,7 @@ export function EventCard({
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div>
           <div className="mb-1.5">
-            <CategoryTag label={category} />
+            <CategoryTag label={category} className="tracking-[0.22em]" />
           </div>
           <h3 className="display-heading text-xl leading-tight text-ink">{title}</h3>
         </div>
