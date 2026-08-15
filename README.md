@@ -32,7 +32,30 @@ cp .env.example .env      # VITE_API_URL defaults to http://localhost:5000
 npm run dev               # http://localhost:5173
 ```
 
-### Admin access
+### Run both (root)
+
+```bash
+npm install
+npm run dev               # server (5000) + client (5173) together
+```
+
+## Git workflow (dev → prod)
+
+Two environments only — feature branches are **dev**, `master` is **prod**.
+
+1. Work on a branch: `git checkout -b feature/<name>` and push to start the **dev** pipeline.
+2. CI (`.github/workflows/ci.yml`) runs build, typecheck, and security checks on every push and PR.
+3. When ready, open a PR from `feature/<name>` into `master`. CI must pass; `master` is protected (requires review, blocks direct pushes).
+4. Merge → push to `master` triggers the **prod** pipeline.
+
+```
+feature/<name> ──┐  (dev env)
+feature/<name> ──┼── PR (CI must pass) ──> master ──> prod env
+```
+
+Deploy jobs in CI are currently placeholder hooks — wire up the actual dev/prod targets there.
+
+## Admin access
 
 Log in at `/admin/login` with the credentials set in `server/.env` (`ADMIN_EMAIL` / `ADMIN_PASSWORD`).
 
