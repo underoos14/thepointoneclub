@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, 'feature/**']
   pull_request:
 
 jobs:
@@ -44,3 +44,16 @@ jobs:
       - name: Client dependency audit
         working-directory: client
         run: npm audit --omit=dev --audit-level=high
+
+  deploy:
+    name: Deploy
+    needs: [code-quality, security]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Deploy to dev (feature branch)
+        if: startsWith(github.ref, 'refs/heads/feature/')
+        run: echo "TODO: deploy to the dev environment"
+      - name: Deploy to prod (master)
+        if: github.ref == 'refs/heads/master'
+        run: echo "TODO: deploy to the prod environment"
