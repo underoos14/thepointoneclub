@@ -89,3 +89,16 @@ export interface User {
   role: 'user' | 'admin';
   createdAt: string;
 }
+
+export type RegistrationStatus = 'registered' | 'cancelled';
+
+export interface Registration {
+  id: string;
+  status: RegistrationStatus;
+  registeredAt: string;
+  event: ClubEvent;
+}
+
+export interface MyRegistrationsResponse {
+  registrations: Registration[];
+}

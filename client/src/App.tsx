@@ -5,6 +5,7 @@ import { PublicLayout } from './layout/PublicLayout';
 import { EventsPage } from './features/events/EventsPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { ProtectedRoute } from './features/auth/ProtectedRoute';
+import { ProfilePage } from './features/profile/ProfilePage';
 import { AdminDashboard } from './features/admin/AdminDashboard';
 import { EventFormPage } from './features/admin/EventFormPage';
 
@@ -27,6 +28,14 @@ export default function App() {
           <Route element={<PublicLayout />}>
             <Route path="/" element={<EventsPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/admin"
               element={

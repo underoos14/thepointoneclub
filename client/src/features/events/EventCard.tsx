@@ -2,8 +2,9 @@ import type { ReactNode } from 'react';
 import type { ClubEvent } from '../../types';
 import { Button } from '../../components/Button';
 import { CategoryTag, StatusBadge } from '../../components/Badge';
-import { CalendarIcon, ClockIcon, ExternalIcon, MapPinIcon } from '../../components/icons';
+import { CalendarIcon, CheckIcon, ClockIcon, ExternalIcon, MapPinIcon } from '../../components/icons';
 import { formatDateRange, formatFee, formatTime } from '../../utils/format';
+import { useRegisterAction } from '../registrations/useRegisterAction';
 
 function Meta({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
@@ -16,15 +17,20 @@ function Meta({ icon, children }: { icon: ReactNode; children: ReactNode }) {
 
 export function EventCard({
   event,
+  registered,
   onOpen,
+  onRegistered,
 }: {
   event: ClubEvent;
+  registered: boolean;
   onOpen: (event: ClubEvent) => void;
+  onRegistered: () => Promise<void>;
 }) {
   const { title, category, images, status, startDate, endDate, startTime, endTime, location, registrationFee } = event;
   const cover = images?.[0];
   const fee = formatFee(registrationFee);
   const registerUrl = registrationFee?.url;
+  const { user, busy, handleRegister } = useRegisterAction(event.id, onRegistered);
 
   return (
     <article
@@ -84,19 +90,23 @@ export function EventCard({
             <Button variant="ghost" size="sm" onClick={() => onOpen(event)}>
               Details
             </Button>
-            {registerUrl && (
-              <a
-                href={registerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex"
-              >
-                <Button variant="primary" size="sm">
-                  Register
-                  <ExternalIcon />
+            {status !== 'past' &&
+              (registered ? (
+                <Button variant="primary" size="sm" disabled>
+                  <CheckIcon />
+                  Registered
                 </Button>
-              </a>
-            )}
+              ) : (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  disabled={busy}
+                  onClick={() => handleRegister(registerUrl)}
+                >
+                  {user ? 'Register' : 'Log in to register'}
+                  {registerUrl ? <ExternalIcon /> : null}
+                </Button>
+              ))}
           </div>
         </div>
       </div>

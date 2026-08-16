@@ -45,6 +45,17 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   res.json(issueAuthResponse(user));
 });
 
+export const checkUsername = asyncHandler(async (req: Request, res: Response) => {
+  const { username } = req.body;
+
+  if (!username || typeof username !== 'string') {
+    throw new AppError(400, 'Username is required');
+  }
+
+  const exists = await User.exists({ username: username.toLowerCase().trim() });
+  res.json({ exists: Boolean(exists) });
+});
+
 export const me = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
     throw new AppError(401, 'Authentication required');

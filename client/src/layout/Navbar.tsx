@@ -34,6 +34,11 @@ export function Navbar() {
           <NavLink to="/#events" className={navLinkClass}>
             Events
           </NavLink>
+          {user && (
+            <NavLink to="/profile" className={navLinkClass}>
+              Profile
+            </NavLink>
+          )}
           {user?.role === 'admin' && (
             <NavLink to="/admin" className={navLinkClass}>
               Admin
@@ -62,7 +67,7 @@ export function Navbar() {
           ) : (
             <NavLink to="/login">
               <Button variant="outline" size="sm">
-                Admin login
+                Log in
               </Button>
             </NavLink>
           )}

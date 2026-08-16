@@ -14,6 +14,7 @@ import {
   PriceIcon,
 } from '../../components/icons';
 import { formatDateRange, formatFee, formatTime } from '../../utils/format';
+import { useRegisterAction } from '../registrations/useRegisterAction';
 
 function MetaRow({ icon, children }: { icon: ReactNode; children: ReactNode }) {
   return (
@@ -44,7 +45,19 @@ function ListBlock({ title, items, tone = 'check' }: { title: string; items?: st
   );
 }
 
-export function EventModal({ event, onClose }: { event: ClubEvent | null; onClose: () => void }) {
+export function EventModal({
+  event,
+  registered,
+  onClose,
+  onRegistered,
+}: {
+  event: ClubEvent | null;
+  registered: boolean;
+  onClose: () => void;
+  onRegistered: () => Promise<void>;
+}) {
+  const { user, busy, handleRegister } = useRegisterAction(event?.id ?? '', onRegistered);
+
   if (!event) return null;
 
   const {
@@ -166,7 +179,7 @@ export function EventModal({ event, onClose }: { event: ClubEvent | null; onClos
             </div>
           )}
 
-          {registerUrl && (
+          {status !== 'past' && (
             <div className="sticky bottom-0 -mx-6 -mb-6 mt-auto flex items-center justify-between gap-4 rounded-b-xl bg-green-900 p-5 sm:-mx-8 sm:-mb-8">
               <div>
                 <p className="text-xs uppercase tracking-widest text-paper/60">Registration</p>
@@ -175,17 +188,17 @@ export function EventModal({ event, onClose }: { event: ClubEvent | null; onClos
                   <span className="ml-2 font-body text-sm font-medium text-paper/70">per person</span>
                 </p>
               </div>
-              <a
-                href={registerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex"
-              >
-                <Button variant="primary" size="lg">
-                  Register now
-                  <ExternalIcon />
+              {registered ? (
+                <Button variant="primary" size="lg" disabled>
+                  <CheckIcon />
+                  Registered
                 </Button>
-              </a>
+              ) : (
+                <Button variant="primary" size="lg" disabled={busy} onClick={() => handleRegister(registerUrl)}>
+                  {user ? (registerUrl ? 'Register now' : 'Register') : 'Log in to register'}
+                  {registerUrl ? <ExternalIcon /> : null}
+                </Button>
+              )}
             </div>
           )}
         </div>
