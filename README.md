@@ -53,7 +53,46 @@ feature/<name> ──┐  (dev env)
 feature/<name> ──┼── PR (CI must pass) ──> master ──> prod env
 ```
 
-Deploy jobs in CI are currently placeholder hooks — wire up the actual dev/prod targets there.
+The deploy jobs in CI are placeholders — production is deployed via the **Vercel GitHub integration** (see below), which watches `master` and deploys automatically.
+
+## Deploying to Vercel (single project)
+
+The whole app — SPA **and** Express API — deploys as **one Vercel project**:
+
+- `vercel.json` at the root builds the client (`client/dist`) and routes `/api/*` to the
+  serverless function in `api/index.ts`.
+- `package.json` uses npm workspaces so one `npm install` covers `client/` and `server/`.
+
+### 1. One-time Vercel setup
+
+1. Import the GitHub repo as a new project on [vercel.com](https://vercel.com) (root directory — no change).
+2. Vercel will auto-detect `vercel.json`. Add the following **environment variables**:
+
+   | Variable | Value |
+   |---|---|
+   | `MONGO_URI` | your MongoDB Atlas connection string |
+   | `JWT_SECRET` | a long random string |
+   | `JWT_EXPIRES_IN` | `7d` (or shorter) |
+   | `DEMO_ACCESS_CODE` | the code visitors must enter to see the site |
+   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | admin login credentials |
+3. Deploy once (Vercel runs `npm run build` → builds the client and bundles the API).
+4. After first deploy, run the seed once against your Atlas DB so the admin user + sample events exist:
+
+   ```bash
+   cd server
+   MONGO_URI=<your-atlas-uri> DEMO_ACCESS_CODE=... ADMIN_EMAIL=... ADMIN_PASSWORD=... npm run seed
+   ```
+
+   (Or set the `ADMIN_*` vars in `server/.env` locally and run `npm run seed`.)
+
+From then on, pushing to `master` auto-deploys.
+
+### Demo access gate
+
+- When `DEMO_ACCESS_CODE` is set, everyone must enter the code once before any page or API
+  response loads. A signed HttpOnly cookie (`tp1_demo`, 12h) is issued on success.
+- When it's empty, the gate is skipped entirely — useful for local dev.
+- The gate protects the API as well, not just the UI.
 
 ## Admin access
 
@@ -78,12 +117,15 @@ All brand values (colours, fonts) are customised in **one place** — `client/ta
 
 | Method | Endpoint | Access |
 |---|---|---|
-| POST | `/api/auth/register` | public |
-| POST | `/api/auth/login` | public |
-| POST | `/api/auth/check-username` | public |
+| GET | `/api/health` | public |
+| GET | `/api/demo/status` | public — returns 200 if the demo cookie is valid |
+| POST | `/api/demo/verify` | public — `{ code }`, sets the demo cookie |
+| POST | `/api/auth/register` | demo access |
+| POST | `/api/auth/login` | demo access |
+| POST | `/api/auth/check-username` | demo access |
 | GET | `/api/auth/me` | user |
-| GET | `/api/events` | public — `status`, `from`, `to`, `category`, `q` |
-| GET | `/api/events/:id` | public |
+| GET | `/api/events` | demo access — `status`, `from`, `to`, `category`, `q` |
+| GET | `/api/events/:id` | demo access |
 | POST | `/api/events` | admin |
 | PUT | `/api/events/:id` | admin |
 | DELETE | `/api/events/:id` | admin |

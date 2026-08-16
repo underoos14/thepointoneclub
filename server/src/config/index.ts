@@ -5,6 +5,8 @@ export const env = {
   mongoUri: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/thepointoneclub',
   jwtSecret: process.env.JWT_SECRET || 'dev-only-secret',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  demoAccessCode: process.env.DEMO_ACCESS_CODE || '',
+  demoAccessExpiresIn: process.env.DEMO_ACCESS_EXPIRES_IN || '12h',
   admin: {
     username: process.env.ADMIN_USERNAME || 'admin',
     email: process.env.ADMIN_EMAIL || 'admin@thepointone.club',

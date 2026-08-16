@@ -1,10 +1,14 @@
 {
   "name": "thepointoneclub",
   "private": true,
+  "workspaces": ["client", "server"],
   "scripts": {
     "dev": "concurrently -n server,client -c green,cyan \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "dev:server": "npm run dev --prefix server",
-    "dev:client": "npm run dev --prefix client"
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --workspace client",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "seed": "npm run seed --workspace server"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
