@@ -14,7 +14,7 @@ import { fetchMe, loginRequest } from './auth.api';
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (creds: { email: string; password: string }) => Promise<User>;
+  login: (creds: { username: string; password: string }) => Promise<User>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -47,8 +47,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const login = useCallback(async ({ email, password }: { email: string; password: string }) => {
-    const { token, user: me } = await loginRequest({ email, password });
+  const login = useCallback(async ({ username, password }: { username: string; password: string }) => {
+    const { token, user: me } = await loginRequest({ username, password });
     setToken(token);
     setUser(me);
     return me;

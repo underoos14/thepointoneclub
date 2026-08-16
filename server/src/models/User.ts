@@ -3,6 +3,7 @@ import mongoose, { HydratedDocument, Model, Types } from 'mongoose';
 
 export interface IUser {
   name: string;
+  username: string;
   email: string;
   passwordHash: string;
   role: 'user' | 'admin';
@@ -11,6 +12,7 @@ export interface IUser {
 export interface SafeUser {
   id: Types.ObjectId;
   name: string;
+  username: string;
   email: string;
   role: 'user' | 'admin';
   createdAt: Date;
@@ -31,6 +33,13 @@ type UserModel = Model<IUser, {}, UserMethods, {}, UserDoc>;
 const userSchema = new mongoose.Schema<IUser, UserModel, UserMethods, {}, {}, {}, UserDoc>(
   {
     name: { type: String, required: true, trim: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
@@ -61,6 +70,7 @@ userSchema.methods.toSafeJSON = function toSafeJSON(this: UserDoc): SafeUser {
   return {
     id: this._id,
     name: this.name,
+    username: this.username,
     email: this.email,
     role: this.role,
     createdAt: this.createdAt!,

@@ -13,31 +13,33 @@ function issueAuthResponse(user: UserDoc) {
 }
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, username, email, password } = req.body;
 
-  if (!name || !email || !password) {
-    throw new AppError(400, 'Name, email and password are required');
+  if (!name || !username || !email || !password) {
+    throw new AppError(400, 'Name, username, email and password are required');
   }
 
-  const existing = await User.findOne({ email: email.toLowerCase() });
+  const existing = await User.findOne({
+    $or: [{ email: email.toLowerCase() }, { username: username.toLowerCase() }],
+  });
   if (existing) {
-    throw new AppError(409, 'An account with this email already exists');
+    throw new AppError(409, 'An account with this email or username already exists');
   }
 
-  const user = await User.create({ name, email, passwordHash: password });
+  const user = await User.create({ name, username, email, passwordHash: password });
   res.status(201).json(issueAuthResponse(user));
 });
 
 export const login = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password) {
-    throw new AppError(400, 'Email and password are required');
+  if (!username || !password) {
+    throw new AppError(400, 'Username and password are required');
   }
 
-  const user = await User.findOne({ email: email.toLowerCase() });
+  const user = await User.findOne({ username: username.toLowerCase() });
   if (!user || !(await user.comparePassword(password))) {
-    throw new AppError(401, 'Invalid email or password');
+    throw new AppError(401, 'Invalid username or password');
   }
 
   res.json(issueAuthResponse(user));
