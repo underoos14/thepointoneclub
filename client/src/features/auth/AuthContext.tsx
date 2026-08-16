@@ -9,12 +9,13 @@ import {
 import type { ReactNode } from 'react';
 import type { User } from '../../types';
 import { getToken, setToken } from '../../config/api';
-import { fetchMe, loginRequest } from './auth.api';
+import { fetchMe, loginRequest, registerRequest } from './auth.api';
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (creds: { username: string; password: string }) => Promise<User>;
+  register: (creds: { name: string; username: string; email: string; password: string }) => Promise<User>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -54,14 +55,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return me;
   }, []);
 
+  const register = useCallback(
+    async ({ name, username, email, password }: { name: string; username: string; email: string; password: string }) => {
+      const { token, user: me } = await registerRequest({ name, username, email, password });
+      setToken(token);
+      setUser(me);
+      return me;
+    },
+    []
+  );
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, login, logout, isAdmin: user?.role === 'admin' }),
-    [user, loading, login, logout]
+    () => ({ user, loading, login, register, logout, isAdmin: user?.role === 'admin' }),
+    [user, loading, login, register, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

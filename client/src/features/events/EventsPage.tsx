@@ -7,6 +7,7 @@ import { EventCard } from './EventCard';
 import { EventFilters } from './EventFilters';
 import { EventModal } from './EventModal';
 import { useEvents } from './useEvents';
+import { useMyRegistrations } from '../registrations/useMyRegistrations';
 
 export function EventsPage() {
   const {
@@ -19,6 +20,8 @@ export function EventsPage() {
     error,
     loadMore,
   } = useEvents();
+
+  const { registeredIds, refresh } = useMyRegistrations();
 
   const [selected, setSelected] = useState<ClubEvent | null>(null);
 
@@ -98,7 +101,13 @@ export function EventsPage() {
             <>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {events.map((event) => (
-                  <EventCard key={event.id} event={event} onOpen={setSelected} />
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    registered={registeredIds.has(event.id)}
+                    onOpen={setSelected}
+                    onRegistered={refresh}
+                  />
                 ))}
               </div>
 
@@ -121,7 +130,12 @@ export function EventsPage() {
         </div>
       </section>
 
-      <EventModal event={selected} onClose={() => setSelected(null)} />
+      <EventModal
+        event={selected}
+        registered={selected ? registeredIds.has(selected.id) : false}
+        onClose={() => setSelected(null)}
+        onRegistered={refresh}
+      />
     </>
   );
 }

@@ -36,3 +36,8 @@ export async function fetchMe(): Promise<User> {
   const { data } = await api.get('/api/auth/me');
   return data.user;
 }
+
+export async function checkUsername(username: string): Promise<{ exists: boolean }> {
+  const { data } = await api.post('/api/auth/check-username', { username });
+  return data;
+}

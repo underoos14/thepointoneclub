@@ -80,12 +80,16 @@ All brand values (colours, fonts) are customised in **one place** — `client/ta
 |---|---|---|
 | POST | `/api/auth/register` | public |
 | POST | `/api/auth/login` | public |
+| POST | `/api/auth/check-username` | public |
 | GET | `/api/auth/me` | user |
 | GET | `/api/events` | public — `status`, `from`, `to`, `category`, `q` |
 | GET | `/api/events/:id` | public |
 | POST | `/api/events` | admin |
 | PUT | `/api/events/:id` | admin |
 | DELETE | `/api/events/:id` | admin |
+| POST | `/api/registrations` | user — `{ eventId }` |
+| GET | `/api/registrations/mine` | user |
+| DELETE | `/api/registrations/:id` | user — cancel |
 
 ## Adding new modules
 

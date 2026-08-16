@@ -201,9 +201,27 @@ async function seedEvents() {
   console.log(`[seed] inserted ${docs.length} events`);
 }
 
+async function seedDemoUser() {
+  const username = 'demo';
+  const existing = await User.findOne({ username });
+  if (existing) {
+    console.log(`[seed] demo user already present: ${username}`);
+    return;
+  }
+  await User.create({
+    name: 'Demo Member',
+    username,
+    email: 'demo@thepointone.club',
+    passwordHash: 'demo2024',
+    role: 'user',
+  });
+  console.log(`[seed] demo user created: ${username}`);
+}
+
 async function run() {
   await connectDB(env.mongoUri);
   await seedAdmin();
+  await seedDemoUser();
   await seedEvents();
   await disconnectDB();
   console.log('[seed] done');
