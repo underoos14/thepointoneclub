@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './features/auth/AuthContext';
+import { DemoGate } from './features/demo/DemoGate';
 import { PublicLayout } from './layout/PublicLayout';
 import { EventsPage } from './features/events/EventsPage';
 import { LoginPage } from './features/auth/LoginPage';
@@ -23,45 +24,47 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ScrollToHash />
-        <Routes>
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<EventsPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute role="admin">
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/events/new"
-              element={
-                <ProtectedRoute role="admin">
-                  <EventFormPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/events/:id/edit"
-              element={
-                <ProtectedRoute role="admin">
-                  <EventFormPage />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-        </Routes>
+        <DemoGate>
+          <ScrollToHash />
+          <Routes>
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<EventsPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute role="admin">
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/events/new"
+                element={
+                  <ProtectedRoute role="admin">
+                    <EventFormPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/events/:id/edit"
+                element={
+                  <ProtectedRoute role="admin">
+                    <EventFormPage />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+          </Routes>
+        </DemoGate>
       </AuthProvider>
     </BrowserRouter>
   );
