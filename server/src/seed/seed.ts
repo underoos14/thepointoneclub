@@ -171,18 +171,28 @@ const baseEvents: IEvent[] = [
 ];
 
 async function seedAdmin() {
-  const existing = await User.findOne({ email: env.admin.email });
-  if (existing) {
-    console.log(`[seed] admin already present: ${env.admin.email}`);
+  const existingByUsername = await User.findOne({ username: env.admin.username.toLowerCase() });
+  if (existingByUsername) {
+    console.log(`[seed] admin already present: ${env.admin.username}`);
     return;
   }
+
+  const existingByEmail = await User.findOne({ email: env.admin.email.toLowerCase() });
+  if (existingByEmail) {
+    existingByEmail.username = env.admin.username.toLowerCase();
+    await existingByEmail.save();
+    console.log(`[seed] admin updated: ${env.admin.username}`);
+    return;
+  }
+
   await User.create({
     name: env.admin.name,
+    username: env.admin.username,
     email: env.admin.email,
     passwordHash: env.admin.password,
     role: 'admin',
   });
-  console.log(`[seed] admin created: ${env.admin.email}`);
+  console.log(`[seed] admin created: ${env.admin.username}`);
 }
 
 async function seedEvents() {

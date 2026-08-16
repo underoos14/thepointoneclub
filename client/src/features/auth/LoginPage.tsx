@@ -2,15 +2,17 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
-import { TextField } from '../../components/Field';
+import { Field, TextField } from '../../components/Field';
+import { EyeIcon, EyeOffIcon } from '../../components/icons';
 import { getErrorMessage } from '../../config/api';
 import { useAuth } from './AuthContext';
 
 export function LoginPage() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -23,7 +25,7 @@ export function LoginPage() {
     setError('');
     setSubmitting(true);
     try {
-      const me = await login({ email, password });
+      const me = await login({ username, password });
       navigate(me.role === 'admin' ? '/admin' : '/', { replace: true });
     } catch (err) {
       setError(getErrorMessage(err, 'Could not sign in. Please try again.'));
@@ -42,23 +44,35 @@ export function LoginPage() {
 
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4 rounded-xl bg-surface p-6 shadow-card">
           <TextField
-            id="email"
-            label="Email"
-            type="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            type="text"
+            autoComplete="username"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
-          <TextField
-            id="password"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <Field label="Password" htmlFor="password" required>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-sm border border-ink/15 bg-surface px-3 py-2 pr-20 text-sm outline-none transition-colors focus:border-green-700 focus:ring-2 focus:ring-green-700/20"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-1.5 text-green-700 transition-colors hover:bg-green-100"
+              >
+                {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+              </button>
+            </div>
+          </Field>
 
           {error && (
             <p className="rounded-sm bg-red-100 px-3 py-2 text-sm font-medium text-red-700">

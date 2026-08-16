@@ -84,6 +84,7 @@ export interface EventsResponse {
 export interface User {
   id: string;
   name: string;
+  username: string;
   email: string;
   role: 'user' | 'admin';
   createdAt: string;

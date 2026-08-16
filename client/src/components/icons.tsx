@@ -83,6 +83,25 @@ export function ArrowRightIcon({ className = 'h-4 w-4' }: IconProps) {
   );
 }
 
+export function EyeIcon({ className = 'h-4 w-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M2.5 10s3-4.5 7.5-4.5S17.5 10 17.5 10s-3 4.5-7.5 4.5S2.5 10 2.5 10z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <circle cx="10" cy="10" r="2" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+export function EyeOffIcon({ className = 'h-4 w-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M2.5 10s3-4.5 7.5-4.5 7.5 4.5 7.5 4.5-3 4.5-7.5 4.5S2.5 10 2.5 10z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <circle cx="10" cy="10" r="2" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M3.5 3.5l13 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function InstagramIcon({ className = 'h-5 w-5' }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
