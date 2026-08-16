@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './features/auth/AuthContext';
-import { DemoGate } from './features/demo/DemoGate';
 import { PublicLayout } from './layout/PublicLayout';
 import { EventsPage } from './features/events/EventsPage';
 import { LoginPage } from './features/auth/LoginPage';
@@ -24,9 +23,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <DemoGate>
-          <ScrollToHash />
-          <Routes>
+        <ScrollToHash />
+        <Routes>
             <Route element={<PublicLayout />}>
               <Route path="/" element={<EventsPage />} />
               <Route path="/login" element={<LoginPage />} />
@@ -64,7 +62,7 @@ export default function App() {
               />
             </Route>
           </Routes>
-        </DemoGate>
+
       </AuthProvider>
     </BrowserRouter>
   );
